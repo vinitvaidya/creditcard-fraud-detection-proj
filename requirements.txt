@@ -11,4 +11,5 @@ ensure
 joblib
 types-PyYAML
 fastapi
+kagglehub
 -e .
