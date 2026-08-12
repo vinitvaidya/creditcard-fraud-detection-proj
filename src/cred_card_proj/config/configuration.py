@@ -4,6 +4,8 @@ from cred_card_proj.entity.config_entity import (
     DataIngestionConfig,
     DataValidationConfig,
     DataTransformationConfig,
+    ModelTrainerConfig,
+    ModelEvaluationConfig,
 )
 
 
@@ -60,3 +62,42 @@ class ConfigurationManager:
         )
 
         return data_transformation_config
+
+    def get_model_trainer_config(self) -> ModelTrainerConfig:
+        config = self.config.model_trainer
+        params = self.params.XGBoost
+        schema = self.schema.TARGET_COLUMN
+
+        create_directories([config.root_dir])
+
+        model_trainer_config = ModelTrainerConfig(
+            root_dir=config.root_dir,
+            train_data_path=config.train_data_path,
+            test_data_path=config.test_data_path,
+            model_name=config.model_name,
+            eval_metric=params.eval_metric,
+            target_column=schema.name,
+        )
+
+        return model_trainer_config
+
+    def get_model_evaluation_config(self) -> ModelEvaluationConfig:
+        config = self.config.model_evaluation
+        params = self.params.XGBoost
+        schema = self.schema.TARGET_COLUMN
+
+        create_directories([config.root_dir])
+
+        model_evaluation_config = ModelEvaluationConfig(
+            root_dir=config.root_dir,
+            test_data_path=config.test_data_path,
+            model_path=config.model_path,
+            all_params=params,
+            metric_file_name=config.metric_file_name,
+            classification_report_file_name=config.classification_report_file_name,
+            confusion_matrix=config.confusion_matrix,
+            target_column=schema.name,
+            mlflow_uri="https://dagshub.com/vinitvaidya/creditcard-fraud-detection-proj.mlflow",
+        )
+
+        return model_evaluation_config

@@ -12,4 +12,6 @@ joblib
 types-PyYAML
 fastapi
 kagglehub
+imblearn
+xgboost
 -e .
