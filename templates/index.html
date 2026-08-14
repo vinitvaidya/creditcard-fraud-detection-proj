@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fraud Detection Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0B0F14;
+    --panel: #121820;
+    --panel-border: #212B36;
+    --text: #E4E9EF;
+    --text-dim: #7C8896;
+    --amber: #F5A623;
+    --green: #3DDC84;
+    --red: #FF4D4F;
+    --mono: 'JetBrains Mono', monospace;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background:
+      radial-gradient(circle at 15% 0%, rgba(245,166,35,0.06), transparent 40%),
+      var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    min-height: 100vh;
+    padding: 48px 24px 80px;
+  }
+
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+
+  header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--panel-border);
+    padding-bottom: 20px;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .brand-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 3px rgba(61,220,132,0.15);
+  }
+
+  h1 {
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .status-line {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 0.02em;
+  }
+
+  .lede {
+    color: var(--text-dim);
+    font-size: 14.5px;
+    line-height: 1.6;
+    max-width: 60ch;
+    margin-bottom: 32px;
+  }
+
+  .lede strong { color: var(--text); font-weight: 500; }
+
+  form { display: flex; flex-direction: column; gap: 20px; }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    padding: 22px 24px 26px;
+  }
+
+  .card-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin: 0 0 4px;
+  }
+
+  .card-sub {
+    font-size: 12.5px;
+    color: var(--text-dim);
+    margin: 0 0 18px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+  }
+
+  .field label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+
+  .field input {
+    width: 100%;
+    background: #0D1319;
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 9px 10px;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .field input:hover { border-color: #33404D; }
+
+  .field input:focus {
+    outline: none;
+    border-color: var(--amber);
+    background: #0F1620;
+  }
+
+  .primary-fields .grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .submit-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .hint {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: var(--mono);
+  }
+
+  button {
+    appearance: none;
+    border: none;
+    background: var(--amber);
+    color: #1A1305;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 14px;
+    padding: 13px 26px;
+    border-radius: 7px;
+    cursor: pointer;
+    letter-spacing: 0.01em;
+    transition: transform 0.1s ease, box-shadow 0.15s ease;
+  }
+
+  button:hover {
+    box-shadow: 0 0 0 4px rgba(245,166,35,0.15);
+  }
+
+  button:active { transform: scale(0.98); }
+
+  footer {
+    margin-top: 36px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: #4A5561;
+    text-align: center;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <h1>Transaction Risk Console</h1>
+      </div>
+      <span class="status-line">MODEL: XGBOOST // v1</span>
+    </header>
+
+    <p class="lede">
+      Enter the raw feature vector for a single transaction. <strong>V1&ndash;V28</strong> are the anonymized
+      PCA components from the source dataset; <strong>Time</strong> and <strong>Amount</strong> are left unscaled.
+      The console runs the vector through the trained classifier and returns a verdict.
+    </p>
+
+    <form action="/predict-form" method="post">
+      <div class="card primary-fields">
+        <p class="card-title">Transaction Metadata</p>
+        <p class="card-sub">Values as recorded at the point of sale</p>
+        <div class="grid">
+          <div class="field">
+            <label for="Time">Time (sec)</label>
+            <input type="number" step="any" id="Time" name="Time" required placeholder="0.0" />
+          </div>
+          <div class="field">
+            <label for="Amount">Amount</label>
+            <input type="number" step="any" id="Amount" name="Amount" required placeholder="0.00" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="card-title">PCA Components</p>
+        <p class="card-sub">V1 through V28 &mdash; anonymized transaction features</p>
+        <div class="grid">
+          {% for i in range(1, 29) %}
+          <div class="field">
+            <label for="V{{ i }}">V{{ i }}</label>
+            <input type="number" step="any" id="V{{ i }}" name="V{{ i }}" required placeholder="0.0" />
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <span class="hint">// all 30 fields required before analysis can run</span>
+        <button type="submit">Run Analysis &rarr;</button>
+      </div>
+    </form>
+
+    <footer>CREDIT CARD FRAUD DETECTION &mdash; INTERNAL TOOL</footer>
+  </div>
+</body>
+</html>

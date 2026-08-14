@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Analysis Result &mdash; Fraud Detection Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0B0F14;
+    --panel: #121820;
+    --panel-border: #212B36;
+    --text: #E4E9EF;
+    --text-dim: #7C8896;
+    --amber: #F5A623;
+    --green: #3DDC84;
+    --red: #FF4D4F;
+    --mono: 'JetBrains Mono', monospace;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+
+    {% if prediction == 1 %}
+    --verdict: var(--red);
+    --verdict-bg: rgba(255,77,79,0.08);
+    {% else %}
+    --verdict: var(--green);
+    --verdict-bg: rgba(61,220,132,0.08);
+    {% endif %}
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background:
+      radial-gradient(circle at 15% 0%, rgba(245,166,35,0.06), transparent 40%),
+      var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    min-height: 100vh;
+    padding: 48px 24px 80px;
+  }
+
+  .wrap { max-width: 640px; margin: 0 auto; }
+
+  header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--panel-border);
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .brand { display: flex; align-items: center; gap: 10px; }
+
+  .brand-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--verdict);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--verdict) 20%, transparent);
+  }
+
+  h1 {
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .status-line {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .verdict-panel {
+    background: var(--verdict-bg);
+    border: 1px solid var(--verdict);
+    border-radius: 12px;
+    padding: 40px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .verdict-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--verdict) 8%, transparent), transparent 60%);
+    pointer-events: none;
+  }
+
+  .verdict-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--verdict);
+    margin: 0 0 14px;
+  }
+
+  .verdict-label {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 34px;
+    color: var(--text);
+    margin: 0 0 10px;
+    letter-spacing: -0.01em;
+  }
+
+  .verdict-code {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--verdict);
+    background: rgba(0,0,0,0.25);
+    border: 1px solid var(--verdict);
+    border-radius: 20px;
+    padding: 5px 14px;
+    margin-top: 4px;
+  }
+
+  .pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--verdict);
+    display: inline-block;
+    margin-right: 8px;
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 color-mix(in srgb, var(--verdict) 40%, transparent); }
+    50% { opacity: 0.6; box-shadow: 0 0 0 6px color-mix(in srgb, var(--verdict) 0%, transparent); }
+  }
+
+  .meta-card {
+    margin-top: 24px;
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--text-dim);
+  }
+
+  .meta-card span.value { color: var(--text); }
+
+  .actions {
+    margin-top: 28px;
+    display: flex;
+    gap: 12px;
+  }
+
+  a.btn {
+    text-decoration: none;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 13.5px;
+    padding: 12px 20px;
+    border-radius: 7px;
+    text-align: center;
+    flex: 1;
+    transition: box-shadow 0.15s ease;
+  }
+
+  a.btn.primary {
+    background: var(--amber);
+    color: #1A1305;
+  }
+
+  a.btn.primary:hover { box-shadow: 0 0 0 4px rgba(245,166,35,0.15); }
+
+  a.btn.secondary {
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--panel-border);
+  }
+
+  a.btn.secondary:hover { border-color: #33404D; color: var(--text); }
+
+  footer {
+    margin-top: 40px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: #4A5561;
+    text-align: center;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pulse { animation: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <h1>Analysis Result</h1>
+      </div>
+      <span class="status-line">MODEL: XGBOOST // v1</span>
+    </header>
+
+    <div class="verdict-panel">
+      <p class="verdict-eyebrow"><span class="pulse"></span>Classification Complete</p>
+      {% if prediction == 1 %}
+      <p class="verdict-label">Fraud Detected</p>
+      <span class="verdict-code">CLASS = 1 &middot; FLAGGED</span>
+      {% else %}
+      <p class="verdict-label">Transaction Legitimate</p>
+      <span class="verdict-code">CLASS = 0 &middot; CLEARED</span>
+      {% endif %}
+    </div>
+
+    <div class="meta-card">
+      <span>predicted_category</span>
+      <span class="value">{{ prediction }}</span>
+    </div>
+
+    <div class="actions">
+      <a href="/" class="btn primary">Analyze Another &rarr;</a>
+      <a href="/docs" class="btn secondary">API Docs</a>
+    </div>
+
+    <footer>CREDIT CARD FRAUD DETECTION &mdash; INTERNAL TOOL</footer>
+  </div>
+</body>
+</html>
